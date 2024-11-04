@@ -20,7 +20,7 @@ Tham khảo [uptime.com](https://uptime.com/).
 2. “một trang web”
 3. container
 4. endpoint
-5. hiển thị reltime các tài nguyên của mạng máy chủ
+5. hiển thị realtime các tài nguyên của mạng máy chủ
 6. Xây biểu đồ lưu lượng truy cập
 7. 2 container DOCKER
 
