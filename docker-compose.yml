@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./backend/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  cadvisor:
+    image: google/cadvisor:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # Để cadvisor có thể giám sát các container Docker
+    restart: always
+
+  gold_price_exporter:
+    build:
+      context: ./backend/gold_price_exporter
+      dockerfile: Dockerfile
+    ports:
+      - "9091:9091"
+
+  currency_rate_exporter:
+    build:
+      context: ./backend/currency_rate_exporter
+      dockerfile: Dockerfile
+    ports:
+      - "9092:9092"
+      
+  node_exporter:
+    image: prom/node-exporter
+    ports:
+      - "9100:9100"  # Để truy cập dữ liệu từ node_exporter
+    restart: always
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin  # Mật khẩu mặc định cho admin
+    depends_on:
+      - prometheus
+    volumes:
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana/dashboards:/etc/grafana/dashboards

@@ -1,0 +1,12 @@
+scrape_configs:
+- job_name: 'cadvisor'
+  static_configs:
+  - targets: [ 'cadvisor:8080' ] # Địa chỉ của cadvisor (giám sát container)
+
+- job_name: 'gold_price_monitoring'
+  static_configs:
+  - targets: [ 'localhost:9091' ] # API giám sát giá vàng
+
+- job_name: 'currency_rate_monitoring'
+  static_configs:
+  - targets: [ 'localhost:9092' ] # API giám sát tỷ giá ngoại tệ
