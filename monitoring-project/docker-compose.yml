@@ -1,19 +1,5 @@
 version: '3'
 services:
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
-
-  api_monitor:
-    build: ./api_monitor
-    container_name: api_monitor
-    ports:
-      - "5000:5000"
-
   gold_rate_api:
     build: ./gold_rate_api
     container_name: gold_rate_api
