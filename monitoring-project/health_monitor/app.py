@@ -12,4 +12,4 @@ app = Flask(__name__)
 app.register_blueprint(routes)
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=8003)  # Ứng dụng chạy trên cổng 8003
+    app.run(host="0.0.0.0", port=8003)  # Ứng dụng chạy trên cổng 8003
