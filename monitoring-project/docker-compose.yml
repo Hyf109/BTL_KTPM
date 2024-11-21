@@ -1,15 +1,29 @@
-version: '3'
 services:
-  gold_rate_api:
-    build: ./gold_rate_api
-    container_name: gold_rate_api
-    image: gold_rate_api
-    ports:
-      - "8001:8000"
-  
   exchange_rate_api:
     build: ./exchange_rate_api
     container_name: exchange_rate_api
     image: exchange_rate_api
     ports:
+      - "8001:8000"
+
+  gold_rate_api:
+    build: ./gold_rate_api
+    container_name: gold_rate_api
+    image: gold_rate_api
+    ports:
       - "8002:8000"
+
+  health_monitor:
+    build:
+      context: ./health_monitor
+    container_name: health_monitor
+    ports:
+      - "8003:8003"
+    depends_on:
+      - gold_rate_api
+      - exchange_rate_api
+    environment:
+      - EXCHANGE_RATE_API_URL=http://exchange_rate_api:8001/exchange-rates
+      - GOLD_PRICE_API_URL=http://gold_rate_api:8002/gold-prices
+      - APP_PORT=8003
+      - FLASK_APP=app.py

@@ -1,0 +1,7 @@
+flask==2.3.2           # Flask framework để tạo API
+requests==2.31.0       # Gửi HTTP requests (kiểm tra API bên ngoài)
+psutil==5.9.6          # Lấy thông tin CPU, RAM (kiểm tra hệ thống)
+
+# Các thư viện hỗ trợ test
+pytest==7.4.2          # Framework viết test
+pytest-flask==1.2.0    # Test tích hợp Flask
