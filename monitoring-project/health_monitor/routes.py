@@ -19,8 +19,8 @@ history_data = {
 @routes.route('/health', methods=['GET'])
 def health_check():
     uptime = time.time() - start_time
-    exchange_api_status = ExternalAPI.check_external_api("http://localhost:8001/exchange-rates")
-    gold_api_status = ExternalAPI.check_external_api("http://localhost:8002/gold-prices")
+    exchange_api_status = ExternalAPI.check_external_api("http://exchange_rate_api:8000/exchange-rates")
+    gold_api_status = ExternalAPI.check_external_api("http://gold_rate_api:8000/gold-prices")
     
     exchange_docker_status = ContainerAPI.check_docker_status("exchange_rate_api")
     gold_docker_status = ContainerAPI.check_docker_status("gold_rate_api")
