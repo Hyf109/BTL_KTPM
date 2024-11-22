@@ -27,3 +27,6 @@ services:
       - GOLD_PRICE_API_URL=http://gold_rate_api:8002/gold-prices
       - APP_PORT=8003
       - FLASK_APP=app.py
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # Mount Docker socket
+    

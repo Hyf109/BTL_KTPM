@@ -1,5 +1,11 @@
 FROM python:3.9-slim
 
+
+# Install necessary dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    docker.io
+
 WORKDIR /app
 
 COPY . .
