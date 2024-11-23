@@ -1,20 +1,29 @@
 from flask import Blueprint, jsonify
+from flask_socketio import emit
+
 from services.external_api import ExternalAPI
 from services.system_api import SystemAPI
 from services.container_status import ContainerAPI
 import time
+import threading
 
 routes = Blueprint('routes', __name__)
+socketio = None  # SocketIO sẽ được set từ app.py
 start_time = time.time()  # Lưu thời gian bắt đầu chạy ứng dụng
 
 # Biến lưu trữ lịch sử dữ liệu
 history_data = {
+    "is_healthy":[],
     "timestamps": [],
     "cpu_usage": [],
     "memory_usage": [],
     "gold_api": [],
-    "exchange_api": []
+    "exchange_api": [],
+    "gold_docker":[],
+    "exchange_docker":[]
 }
+
+
 
 @routes.route('/health', methods=['GET'])
 def health_check():
@@ -26,20 +35,24 @@ def health_check():
     gold_docker_status = ContainerAPI.check_docker_status("gold_rate_api")
     
     system_health = SystemAPI.check_system_health()
+    is_healthy = gold_api_status and exchange_api_status and system_health["status"] == "healthy"
 
     # Cập nhật lịch sử dữ liệu
+    history_data["is_healthy"].append(int(is_healthy))
     history_data["timestamps"].append(time.time())
     history_data["cpu_usage"].append(system_health["cpu_usage"])
     history_data["memory_usage"].append(system_health["memory_usage"])
     history_data["gold_api"].append(int(gold_api_status))
     history_data["exchange_api"].append(int(exchange_api_status))
+    history_data["gold_docker"].append(int(gold_docker_status))
+    history_data["exchange_docker"].append(int(exchange_docker_status))
 
     # Đảm bảo không lưu quá nhiều dữ liệu
     if len(history_data["timestamps"]) > 100:
         for key in history_data.keys():
             history_data[key].pop(0)
 
-    is_healthy = gold_api_status and exchange_api_status and system_health["status"] == "healthy"
+    
     return jsonify({
         "status": "healthy" if is_healthy else "unhealthy",
         "uptime": f"{uptime:.2f} seconds",
@@ -50,7 +63,8 @@ def health_check():
         "system": {
             "cpu_usage": f"{system_health['cpu_usage']}%",
             "memory_usage": f"{system_health['memory_usage']}%"
-        }
+        },
+        "history data": history_data
     }), 200 if is_healthy else 500
 
 # @routes.route('/dashboard', methods=['GET'])
