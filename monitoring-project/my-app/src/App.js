@@ -81,6 +81,24 @@ function App() {
     ],
   };
 
+  const networkLineChartOptions = {
+    scales: {
+      y: {
+        beginAtZero: true, // Không bắt đầu từ 0
+        min: 1,            // Giá trị nhỏ nhất
+        max: 2.5,            // Giá trị lớn nhất
+        ticks: {
+          stepSize: 0.15,    // Khoảng cách giữa các giá trị trên trục tung
+          callback: (value) => `${value}Mbps`, // Thêm ký hiệu % vào các giá trị trục tung
+        },
+        title: {
+          display: true,
+          text: 'Mbps', // Nhãn trục tung
+        },
+      },
+    },
+  };
+
   const cpuLineChart = {
     labels: timestamps,
     datasets: [
@@ -94,12 +112,29 @@ function App() {
     ],
   };
   
+  const cpuLineChartOptions = {
+    scales: {
+      y: {
+        beginAtZero: false, // Bắt đầu từ 0
+        min: 0,           // Giá trị nhỏ nhất
+        max: 2,           // Giá trị lớn nhất
+        ticks: {
+          stepSize: 0.2,  // Khoảng cách giữa các giá trị trên trục tung
+          callback: (value) => `${value}%`, // Thêm ký hiệu % vào các giá trị trục tung
+        },
+        title: {
+          display: true,
+          text: 'CPU Usage (%)', // Nhãn cho trục tung
+        },
+      },
+    },
+  };
 
-  const memoryLineChart = {
+  const memoryLineChartData = {
     labels: timestamps,
     datasets: [
       {
-        label: 'Memory Usage (%)',
+        label: 'Memory Usage',
         data: memoryUsages,
         fill: false,
         borderColor: 'rgba(54,162,235,1)', // Màu xanh lam
@@ -107,6 +142,25 @@ function App() {
       },
     ],
   };
+  
+  const memoryLineChartOptions = {
+    scales: {
+      y: {
+        beginAtZero: false, // Không bắt đầu từ 0
+        min: 11,            // Giá trị nhỏ nhất
+        max: 13,            // Giá trị lớn nhất
+        ticks: {
+          stepSize: 0.2,    // Khoảng cách giữa các giá trị trên trục tung
+          callback: (value) => `${value}%`, // Thêm ký hiệu % vào các giá trị trục tung
+        },
+        title: {
+          display: true,
+          text: 'Memory Usage (%)', // Nhãn trục tung
+        },
+      },
+    },
+  };
+  
   
   
   
@@ -159,7 +213,7 @@ function App() {
               <div className="chart">
                 <h2 className="chart-title">Network Traffic:</h2>
                 <div className="chart-container">
-                  <Line data={networkDataChart} />
+                  <Line data={networkDataChart} options={networkLineChartOptions} />
                 </div>
               </div>
 
@@ -168,23 +222,7 @@ function App() {
                   <h2 className="chart-title">CPU Usage:</h2>
                   <div className="chart-container">
                     <Line 
-                      data={cpuLineChart}
-                      options={{
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                          legend: {
-                            position: 'top',
-                          },
-                          tooltip: {
-                            callbacks: {
-                              label: function (context) {
-                                return `${context.raw}%`;
-                              },
-                            },
-                          },
-                        },
-                      }}
+                      data={cpuLineChart} options={cpuLineChartOptions}
                     />
                   </div>
                 </div>
@@ -193,25 +231,7 @@ function App() {
                 <div className="chart">
                   <h2 className="chart-title">Memory Usage:</h2>
                   <div className="chart-container">
-                    <Line 
-                      data={memoryLineChart}
-                      options={{
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                          legend: {
-                            position: 'top',
-                          },
-                          tooltip: {
-                            callbacks: {
-                              label: function (context) {
-                                return `${context.raw}%`;
-                              },
-                            },
-                          },
-                        },
-                      }}
-                    />
+                  <Line data={memoryLineChartData} options={memoryLineChartOptions} />
                   </div>
                 </div>
             </div>
