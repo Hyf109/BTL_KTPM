@@ -3,6 +3,7 @@ from flask_socketio import SocketIO, emit
 from services.external_api import ExternalAPI
 from services.system_api import SystemAPI
 from services.container_status import ContainerAPI
+from services.alert_service import monitor_alerts
 import time
 import threading
 import psutil
@@ -62,6 +63,12 @@ def start_monitor_thread(app, socketio_instance):
     threading.Thread(
         target=monitor_network_bandwidth,
         args=(app, socketio_instance),
+        daemon=True
+    ).start()
+    # Luồng giám sát cảnh báo (sử dụng alert_service)
+    threading.Thread(
+        target=monitor_alerts,
+        args=(app, socketio_instance, network_data),
         daemon=True
     ).start()
 
