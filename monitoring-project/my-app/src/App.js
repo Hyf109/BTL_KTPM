@@ -86,10 +86,10 @@ function App() {
       y: {
         beginAtZero: true, // Không bắt đầu từ 0
         min: 1,            // Giá trị nhỏ nhất
-        max: 2.5,            // Giá trị lớn nhất
+        max: 3,            // Giá trị lớn nhất
         ticks: {
-          stepSize: 0.15,    // Khoảng cách giữa các giá trị trên trục tung
-          callback: (value) => `${value}Mbps`, // Thêm ký hiệu % vào các giá trị trục tung
+          stepSize: 0.2,    // Khoảng cách giữa các giá trị trên trục tung
+          callback: (value) => `${value}`, // Thêm ký hiệu % vào các giá trị trục tung
         },
         title: {
           display: true,
