@@ -21,7 +21,6 @@ function App() {
   const [memoryUsages, setMemoryUsages] = useState([]);
 
   // Hàm fetch dữ liệu API
-  
   const fetchHealthData = async () => {
     setLoading(true); 
 
@@ -104,7 +103,7 @@ function App() {
         data: memoryUsages,
         fill: false,
         borderColor: 'rgba(54,162,235,1)', // Màu xanh lam
-        tension: 1,
+        tension: 0.1,
       },
     ],
   };
