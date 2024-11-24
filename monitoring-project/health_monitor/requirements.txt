@@ -3,6 +3,7 @@ requests==2.31.0       # Gửi HTTP requests (kiểm tra API bên ngoài)
 psutil==5.9.6          # Lấy thông tin CPU, RAM (kiểm tra hệ thống)
 docker==7.1.0
 flask-socketio==5.4.1
+eventlet==0.38.0
 # Các thư viện hỗ trợ test
 pytest==7.4.2          # Framework viết test
 pytest-flask==1.2.0    # Test tích hợp Flask
