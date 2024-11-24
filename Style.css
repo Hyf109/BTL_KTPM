@@ -1,0 +1,128 @@
+/* Tổng thể */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #8faead;
+  text-align: center;
+}
+
+.header {
+  display: flex;
+  align-items: center; /* Căn giữa dọc */
+  justify-content: flex-start; /* Căn trái */
+  padding: 10px;
+  border-radius: 0 0 20px 20px;
+  background-color: #1f2833; /* Màu nền */
+}
+
+.logo {
+  border-radius: 180px;
+  width: 180px;
+  margin-left: 40px;
+  margin-right: 80px;
+}
+
+.header h1 {
+  font-size: 3rem;
+  color: #d7dadd;
+  margin-bottom: 20px;
+}
+
+/* Card chung */
+.card {
+  background-color: #66fcf1;
+  border: 1px solid #232735;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: left;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card h2 {
+  font-size: 1.5rem;
+  color: #3a0751;
+  margin-bottom: 10px;
+}
+
+.card p {
+  font-size: 1rem;
+  margin: 5px 0;
+}
+
+/* Hiệu ứng hover */
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 10px #494f6b;
+}
+
+/* Bố cục Flexbox */
+.container {
+  display: flex; /* Chia container thành hai phần */
+  justify-content: space-between; /* Đẩy các phần tử con ra hai phía */
+  gap: 20px;
+  padding: 20px;
+  align-items: stretch;
+}
+
+/* Cột bên trái */
+.left-column {
+  flex: 2; /* Chiếm 2 phần không gian */
+  display: flex;
+  flex-direction: column; /* Các card nằm theo chiều dọc */
+  gap: 15px;
+}
+
+/* Cột bên phải */
+.right-column {
+  flex: 1 1 45%; /* Giảm chiếm 45% không gian và có thể co giãn */
+  text-align: center; /* Biểu đồ căn giữa */
+  padding: 0 20px 0 20px;
+  display: flex;
+  flex-direction: column; /* Sắp xếp các phần tử theo chiều dọc */
+  justify-content: flex-start; /* Đảm bảo các phần tử không bị căn giữa */
+  align-items: center; /* Căn các phần tử theo chiều ngang */
+  max-width: 800px; /* Đặt chiều rộng tối đa là 800px */
+  margin: 0 auto; /* Căn giữa cột */
+}
+
+.chart {
+  background-color: #66fcf1;
+  border: 1px solid #232735;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  padding: 20px; /* Thêm padding để tránh các phần tử bị quá gần nhau */
+  width: 100%; /* Đảm bảo mỗi biểu đồ chiếm đầy đủ không gian */
+  margin-bottom: 20px; /* Khoảng cách giữa các biểu đồ */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Tiêu đề biểu đồ */
+.chart-title {
+  font-size: 1.5rem;
+  color: #3a0751;
+  margin-bottom: 20px; /* Tạo khoảng cách giữa tiêu đề và biểu đồ */
+}
+
+/* Thẻ chứa biểu đồ */
+.chart-container {
+  width: 100%;
+  height: 500px; /* Bạn có thể thay đổi chiều cao của biểu đồ theo nhu cầu */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff; /* Màu nền của phần biểu đồ */
+  border-radius: 10px;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .container {
+    flex-direction: column; /* Đổi bố cục sang dọc */
+  }
+  .right-column {
+    margin-top: 20px;
+  }
+}
