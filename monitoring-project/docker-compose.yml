@@ -29,4 +29,16 @@ services:
       - FLASK_APP=app.py
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock  # Mount Docker socket
-    
+
+  my_app:
+    build: ./my-app
+    container_name: my-app
+    image: my-app
+    ports:
+      - "8004:3000"
+    depends_on:
+      - health_monitor
+    environment:
+      - HEALTH_MONITOR_HEALTH_URL=http://health_monitor:8003/health
+      - HEALTH_MONITOR_NETWORK_URL=http://health_monitor:8003/network
+      - MAIN_APP=App.js
