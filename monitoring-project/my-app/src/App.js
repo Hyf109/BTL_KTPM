@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
-import './Style.css'; // Import file CSS
+import './Style.css'; 
 
-// Đăng ký các phần mở rộng của Chart.js
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 function App() {
@@ -19,6 +18,8 @@ function App() {
   
   const [cpuUsages, setCpuUsages] = useState([]);
   const [memoryUsages, setMemoryUsages] = useState([]);
+
+  const [activeSection, setActiveSection] = useState('health'); // State to manage which section is active
 
   // Hàm fetch dữ liệu API
   const fetchHealthData = async () => {
@@ -38,7 +39,6 @@ function App() {
 
       const cpuUsageValue = parseFloat(response.data.system.cpu_usage.replace('%', ''));
       const memoryUsageValue = parseFloat(response.data.system.memory_usage.replace('%', ''));
-      setTimestamps((prev) => [...prev, currentTime]);
       setCpuUsages((prev) => [...prev, cpuUsageValue]);
       setMemoryUsages((prev) => [...prev, memoryUsageValue]);
 
@@ -61,7 +61,8 @@ function App() {
     return () => clearInterval(interval);
   }, []); 
 
-  const networkDataChart = {
+  // Các biểu đồ và dữ liệu
+  const networkDataChart = {  
     labels: timestamps,
     datasets: [
       {
@@ -84,16 +85,9 @@ function App() {
   const networkLineChartOptions = {
     scales: {
       y: {
-        beginAtZero: true, // Không bắt đầu từ 0
-        min: 0,            // Giá trị nhỏ nhất
-        max: 3,            // Giá trị lớn nhất
+        beginAtZero: true,
         ticks: {
-          stepSize: 0.3,    // Khoảng cách giữa các giá trị trên trục tung
-          callback: (value) => `${value}`, // Thêm ký hiệu % vào các giá trị trục tung
-        },
-        title: {
-          display: true,
-          text: 'Mbps', // Nhãn trục tung
+          autoSkip: true,
         },
       },
     },
@@ -106,7 +100,7 @@ function App() {
         label: 'CPU Usage (%)',
         data: cpuUsages,
         fill: false,
-        borderColor: 'rgba(255,99,132,1)', // Màu đỏ
+        borderColor: 'rgba(255,99,132,1)',
         tension: 0.1,
       },
     ],
@@ -115,16 +109,9 @@ function App() {
   const cpuLineChartOptions = {
     scales: {
       y: {
-        beginAtZero: false, // Bắt đầu từ 0
-        min: 0,           // Giá trị nhỏ nhất
-        max: 2,           // Giá trị lớn nhất
+        beginAtZero: true,
         ticks: {
-          stepSize: 0.2,  // Khoảng cách giữa các giá trị trên trục tung
-          callback: (value) => `${value}%`, // Thêm ký hiệu % vào các giá trị trục tung
-        },
-        title: {
-          display: true,
-          text: 'CPU Usage (%)', // Nhãn cho trục tung
+          autoSkip: true,
         },
       },
     },
@@ -137,7 +124,7 @@ function App() {
         label: 'Memory Usage',
         data: memoryUsages,
         fill: false,
-        borderColor: 'rgba(54,162,235,1)', // Màu xanh lam
+        borderColor: 'rgba(54,162,235,1)',
         tension: 0.1,
       },
     ],
@@ -146,28 +133,13 @@ function App() {
   const memoryLineChartOptions = {
     scales: {
       y: {
-        beginAtZero: false, // Không bắt đầu từ 0
-        min: 9,            // Giá trị nhỏ nhất
-        max: 13,            // Giá trị lớn nhất
+        beginAtZero: true,
         ticks: {
-          stepSize: 0.4,    // Khoảng cách giữa các giá trị trên trục tung
-          callback: (value) => `${value}%`, // Thêm ký hiệu % vào các giá trị trục tung
-        },
-        title: {
-          display: true,
-          text: 'Memory Usage (%)', // Nhãn trục tung
+          autoSkip: true,
         },
       },
     },
   };
-  
-  
-  
-  
-
-  // if (loading) {
-  //   return <div>Loading health data...</div>;
-  // }
 
   if (error) {
     return <div>{error}</div>;
@@ -179,9 +151,18 @@ function App() {
         <img src="/Health.png" className="logo" alt="Logo" />
         <h1>Health Endpoint Monitoring</h1>
       </div>
-      <div className="container">
-        {healthData ? (
-          <>
+      
+      <div className='main'>
+        
+        <div className="menu">
+          <button onClick={() => setActiveSection('health')}>Health Overview</button>
+          <button onClick={() => setActiveSection('network')}>Network Data</button>
+          <button onClick={() => setActiveSection('cpu')}>CPU Usage</button>
+          <button onClick={() => setActiveSection('memory')}>Memory Usage</button>
+        </div>
+        
+        <div className="container">
+          {activeSection === 'health' && healthData && (
             <div className="left-column">
               <div className="card">
                 <h2>API Exchange</h2>
@@ -209,36 +190,35 @@ function App() {
                 <p>Uptime: {healthData.uptime}</p>
               </div>
             </div>
-            <div className="right-column">
-              <div className="chart">
-                <h2 className="chart-title">Network Traffic:</h2>
-                <div className="chart-container">
-                  <Line data={networkDataChart} options={networkLineChartOptions} />
-                </div>
+          )}
+
+          {activeSection === 'network' && networkData && (
+            <div className="chart">
+              <h2 className="chart-title">Network Traffic:</h2>
+              <div className="chart-container">
+                <Line data={networkDataChart} options={networkLineChartOptions} />
               </div>
-
-              {/* Biểu đồ CPU */}
-              <div className="chart">
-                  <h2 className="chart-title">CPU Usage:</h2>
-                  <div className="chart-container">
-                    <Line 
-                      data={cpuLineChart} options={cpuLineChartOptions}
-                    />
-                  </div>
-                </div>
-
-                {/* Biểu đồ Memory */}
-                <div className="chart">
-                  <h2 className="chart-title">Memory Usage:</h2>
-                  <div className="chart-container">
-                  <Line data={memoryLineChartData} options={memoryLineChartOptions} />
-                  </div>
-                </div>
             </div>
-          </>
-        ) : (
-          <p>Loading data...</p>
-        )}
+          )}
+
+          {activeSection === 'cpu' && (
+            <div className="chart">
+              <h2 className="chart-title">CPU Usage:</h2>
+              <div className="chart-container">
+                <Line data={cpuLineChart} options={cpuLineChartOptions} />
+              </div>
+            </div>
+          )}
+
+          {activeSection === 'memory' && (
+            <div className="chart">
+              <h2 className="chart-title">Memory Usage:</h2>
+              <div className="chart-container">
+                <Line data={memoryLineChartData} options={memoryLineChartOptions} />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </>
   );

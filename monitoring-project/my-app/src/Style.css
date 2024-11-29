@@ -1,19 +1,19 @@
 /* Tổng thể */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #8faead;
+  font-family: 'Roboto', 'Noto Sans Vietnamese', sans-serif;
+  background-color: #bce6ff;
   text-align: center;
 }
+
+/* Header */
 
 .header {
   display: flex;
   align-items: center; /* Căn giữa dọc */
   justify-content: flex-start; /* Căn trái */
   padding: 10px;
-  border-radius: 0 0 20px 20px;
-  background-color: #1f2833; /* Màu nền */
-}
+  background: linear-gradient(135deg, #9a9cea, #a2b9ee);}
 
 .logo {
   border-radius: 180px;
@@ -28,9 +28,57 @@ body {
   margin-bottom: 20px;
 }
 
+/* Phần thân trang */
+.main {
+  display: flex;
+  height: calc(100vh - 200px);
+}
+
+/* Menu */
+/* Menu dọc bên trái */
+.menu {
+  display: flex;
+  flex-direction: column; /* Hiển thị menu theo chiều dọc */
+  background: linear-gradient(150deg,#95afed, #87d7f0);
+  width: 200px; /* Đặt độ rộng cho menu */
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+}
+
+.menu button {
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #8474ff;
+  color: white; 
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%; /* Chiếm toàn bộ chiều rộng */
+  text-align: center; /* Căn trái chữ */
+  font-size: 16px;
+}
+
+.icon {
+  height: 1em; 
+  vertical-align: middle; /* Đảm bảo căn chỉnh giữa icon và chữ */
+  margin-right: 0.5em; 
+}
+
+.menu button:hover {
+  background-color: #8982ed;
+}
+
+/* Khi menu được ẩn, bạn có thể cho nó trượt vào */
+.menu-hidden {
+  display: none;
+}
+
+
+
+
 /* Card chung */
 .card {
-  background-color: #66fcf1;
+  background: linear-gradient(135deg,#c5c8fa, #afb1f1);
   border: 1px solid #232735;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -59,11 +107,13 @@ body {
 
 /* Bố cục Flexbox */
 .container {
+  flex-grow: 1;
   display: flex; /* Chia container thành hai phần */
   justify-content: space-between; /* Đẩy các phần tử con ra hai phía */
   gap: 20px;
-  padding: 20px;
+  padding: 20px 20px 0 20px;
   align-items: stretch;
+  overflow-y: auto;
 }
 
 /* Cột bên trái */
@@ -88,15 +138,15 @@ body {
 }
 
 .chart {
-  background-color: #66fcf1;
+  background: linear-gradient(135deg,#c5c8fa, #afb1f1);
   border: 1px solid #232735;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: left;
-  padding: 20px; /* Thêm padding để tránh các phần tử bị quá gần nhau */
+  padding: 0 20px; /* Thêm padding để tránh các phần tử bị quá gần nhau */
   width: 100%; /* Đảm bảo mỗi biểu đồ chiếm đầy đủ không gian */
-  margin-bottom: 20px; /* Khoảng cách giữa các biểu đồ */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-left: 10px;
 }
 
 /* Tiêu đề biểu đồ */
@@ -109,7 +159,7 @@ body {
 /* Thẻ chứa biểu đồ */
 .chart-container {
   width: 100%;
-  height: 500px; /* Bạn có thể thay đổi chiều cao của biểu đồ theo nhu cầu */
+  height: 485px; /* Bạn có thể thay đổi chiều cao của biểu đồ theo nhu cầu */
   display: flex;
   justify-content: center;
   align-items: center;
