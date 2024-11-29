@@ -1,0 +1,80 @@
+.card-intro {
+  font-family: 'montserrat', sans-serif !important;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #9a9cea, #a2b9ee, #a2dcee, #adeee2); /* Gradient background */
+  color: white;
+  position: relative;
+  box-sizing: border-box;
+}
+
+
+
+.Logo {
+  border-radius: 180px;
+  width: 180px;
+  margin-top: 120px;
+}
+
+.slogan p {
+  background: linear-gradient(135deg, #6335a1, #990ac4, #fa009e);
+  font-size: 36px;
+  font-weight: 600;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.typing-text {
+  font-family: 'montserrat', 'Noto Sans Vietnamese', sans-serif;
+  font-size: 28px;
+  color: white;
+  margin-top: 5px;
+  margin-bottom: 30px;
+  padding: 15px 30px;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3); /* Mờ chữ */
+  background: linear-gradient(135deg,#3c21b7, #8b63da ,#cb98ed, #cfcbd2);
+  border-radius: 50px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  max-width: 780px;
+  line-height: 1.2;
+
+}
+
+button#continueButton {
+  font-family: 'Noto Sans Vietnamese', sans-serif;
+  padding: 14px 28px;
+  font-size: 1.4rem;
+  background: linear-gradient(135deg, #3443a7, #436cdf, #5569eb, #efd8cb); /* Gradient nút */
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Shadow cho nút */
+  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+button#continueButton:hover {
+  background: linear-gradient(135deg, #6a11cb, #7276f8); /* Đổi gradient khi hover */
+  transform: scale(1.1); /* Phóng to nhẹ */
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3); /* Shadow đậm hơn */
+}
+
+button#continueButton:focus {
+  outline: none;
+}
+
+@media (max-width: 768px) {
+  .typing-text {
+    font-size: 1.5rem;
+    line-height: 1.6;
+  }
+
+  button#continueButton {
+    font-size: 1.2rem;
+    padding: 12px 20px;
+  }
+}
