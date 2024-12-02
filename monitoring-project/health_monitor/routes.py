@@ -4,9 +4,10 @@ from services.external_api import ExternalAPI
 from services.system_api import SystemAPI
 from services.container_status import ContainerAPI
 from services.alert_service import monitor_alerts
+from services.data_store import network_data
+from services.network_monitor import monitor_network_bandwidth
 import time
 import threading
-import psutil
 
 # Khởi tạo Blueprint và SocketIO
 routes = Blueprint('routes', __name__)
@@ -25,37 +26,7 @@ history_data = {
     "exchange_docker": []
 }
 
-# Biến lưu thông tin băng thông
-network_data = {
-    "bytes_sent": 0,
-    "bytes_recv": 0
-}
 
-# Giám sát băng thông mạng
-def monitor_network_bandwidth(app, socketio_instance):
-    global network_data
-    with app.app_context():  # Đảm bảo context Flask cho luồng riêng
-        while True:
-            try:
-                # Lấy thông tin băng thông mạng
-                net_io = psutil.net_io_counters()
-                bytes_sent = net_io.bytes_sent
-                bytes_recv = net_io.bytes_recv
-
-                # Cập nhật băng thông (MB)
-                bandwidth_data = {
-                    "bytes_sent": round(bytes_sent / (1024 * 1024), 2),
-                    "bytes_recv": round(bytes_recv / (1024 * 1024), 2)
-                }
-                network_data.update(bandwidth_data)
-
-                # Phát thông tin qua WebSocket
-                socketio_instance.emit('update_network', bandwidth_data)
-
-                # Chờ 1 giây trước khi cập nhật tiếp
-                time.sleep(1)
-            except Exception as e:
-                print(f"Lỗi khi giám sát băng thông mạng: {e}")
 
 # Giám sát health check
 def monitor_health_check(app, socketio_instance):
@@ -150,7 +121,7 @@ def health_check():
             "cpu_usage": f"{system_health['cpu_usage']}%",
             "memory_usage": f"{system_health['memory_usage']}%"
         },
-        "history data": history_data
+        # "history data": history_data
     }), 200 if is_healthy else 500
 
 # Endpoint trả về dữ liệu băng thông mạng
