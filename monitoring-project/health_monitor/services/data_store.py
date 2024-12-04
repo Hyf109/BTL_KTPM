@@ -8,12 +8,9 @@ network_data = {
 history_data = {
     "is_healthy": [],
     "timestamps": [],
-    "cpu_usage": [],
-    "memory_usage": [],
-    "gold_api": [],
-    "exchange_api": [],
-    "gold_docker": [],
-    "exchange_docker": []
+    "status": []
 }
 
 start_time = time.time()
+
+monitored_apis = {}
