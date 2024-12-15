@@ -18,8 +18,6 @@ redis_client = redis.StrictRedis(host='redis', port=6379, db=0)
 routes = Blueprint('routes', __name__)
 socketio = SocketIO()
 
-
-
 # Khởi chạy các luồng giám sát
 def start_monitor_thread(app, socketio_instance):
     threading.Thread(
@@ -70,22 +68,32 @@ def health_check():
         history_data = json.loads(history_data)
     else:
         history_data = []
-        
+    
+    # Add timestamp to health_data before appending to history
+    health_data_with_timestamp = health_data.copy()
+    health_data_with_timestamp["timestamp"] = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
+     
     # Append the new health data to the history
-    history_data.append(health_data)
+    history_data.append(health_data_with_timestamp)
     
     # Store the updated history data in Redis
     redis_client.set('health_check_history', json.dumps(history_data))
     
-    # Include history data in the response
-    response_data = {
-        "current": health_data,
-        "history": history_data
-    }
-
-    return jsonify(response_data), 200 if is_healthy else 500
+    return jsonify(health_data), 200 if is_healthy else 500
 
 # Endpoint trả về dữ liệu băng thông mạng
 @routes.route('/network', methods=['GET'])
 def get_network_data():
     return jsonify(network_data), 200
+
+# Endpoint trả về lịch sử kiểm tra sức khỏe hệ thống
+@routes.route('/history', methods=['GET'])
+def get_health_history():
+    # Retrieve existing health data from Redis
+    history_data = redis_client.get('health_check_history')
+    if history_data:
+        history_data = json.loads(history_data)
+    else:
+        history_data = []
+
+    return jsonify(history_data), 200
