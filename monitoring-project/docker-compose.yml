@@ -38,7 +38,15 @@ services:
       - "8004:3000"
     depends_on:
       - health_monitor
+      - redis
     environment:
       - HEALTH_MONITOR_HEALTH_URL=http://health_monitor:8003/health
       - HEALTH_MONITOR_NETWORK_URL=http://health_monitor:8003/network
       - MAIN_APP=App.js
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+  
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"

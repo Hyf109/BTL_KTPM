@@ -9,6 +9,10 @@ from services.network_monitor import monitor_network_bandwidth
 from services.health_monitor import monitor_health_check
 import time
 import threading
+import redis
+import json
+
+redis_client = redis.StrictRedis(host='redis', port=6379, db=0)
 
 # Khởi tạo Blueprint và SocketIO
 routes = Blueprint('routes', __name__)
@@ -47,19 +51,39 @@ def health_check():
     system_health = SystemAPI.check_system_health()
     is_healthy = gold_api_status and exchange_api_status and system_health["status"] == "healthy"
 
-    return jsonify({
+    health_data = {
         "status": "healthy" if is_healthy else "unhealthy",
         "uptime": f"{uptime:.2f} seconds",
-        "gold_api": "connected" if gold_api_status else "disconnected",
-        "exchange_api": "connected" if exchange_api_status else "disconnected",
+        "gold_api": "connected" if gold_docker_status else "disconnected",
+        "exchange_api": "connected" if exchange_docker_status else "disconnected",
         "gold_docker": "running" if gold_docker_status else "stopped",
         "exchange_docker": "running" if exchange_docker_status else "stopped",
         "system": {
             "cpu_usage": f"{system_health['cpu_usage']}%",
             "memory_usage": f"{system_health['memory_usage']}%"
         },
-        # "history data": history_data
-    }), 200 if is_healthy else 500
+    }
+    
+    # Retrieve existing health data from Redis
+    history_data = redis_client.get('health_check_history')
+    if history_data:
+        history_data = json.loads(history_data)
+    else:
+        history_data = []
+        
+    # Append the new health data to the history
+    history_data.append(health_data)
+    
+    # Store the updated history data in Redis
+    redis_client.set('health_check_history', json.dumps(history_data))
+    
+    # Include history data in the response
+    response_data = {
+        "current": health_data,
+        "history": history_data
+    }
+
+    return jsonify(response_data), 200 if is_healthy else 500
 
 # Endpoint trả về dữ liệu băng thông mạng
 @routes.route('/network', methods=['GET'])
