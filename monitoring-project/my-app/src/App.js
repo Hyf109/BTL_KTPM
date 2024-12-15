@@ -8,26 +8,25 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 function App() {
   const [healthData, setHealthData] = useState(null);
-  const [error, setError] = useState(null);
   const [networkData, setNetworkData] = useState(null);
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const [downloadSpeeds, setDownloadSpeeds] = useState([]);
   const [uploadSpeeds, setUploadSpeeds] = useState([]);
   const [timestamps, setTimestamps] = useState([]);
-  
+
   const [cpuUsages, setCpuUsages] = useState([]);
   const [memoryUsages, setMemoryUsages] = useState([]);
+  
+  const [activeSection, setActiveSection] = useState('health'); // Active section state
 
-  const [activeSection, setActiveSection] = useState('health'); // State to manage which section is active
-
-  // Hàm fetch dữ liệu API
-  const fetchHealthData = async () => {
-    setLoading(true); 
-
+  // Fetch health and network data
+  const fetchData = async () => {
+    setLoading(true);
     try {
-      const response = await axios.get('http://localhost:8003/health');
-      setHealthData(response.data);
+      const healthResponse = await axios.get('http://localhost:8003/health');
+      setHealthData(healthResponse.data);
 
       const networkResponse = await axios.get('http://localhost:8003/network');
       setNetworkData(networkResponse.data);
@@ -37,32 +36,37 @@ function App() {
       setUploadSpeeds((prev) => [...prev, networkResponse.data.bytes_recv]);
       setTimestamps((prev) => [...prev, currentTime]);
 
-      const cpuUsageValue = parseFloat(response.data.system.cpu_usage.replace('%', ''));
-      const memoryUsageValue = parseFloat(response.data.system.memory_usage.replace('%', ''));
+      const cpuUsageValue = parseFloat(healthResponse.data.system.cpu_usage.replace('%', ''));
+      const memoryUsageValue = parseFloat(healthResponse.data.system.memory_usage.replace('%', ''));
       setCpuUsages((prev) => [...prev, cpuUsageValue]);
       setMemoryUsages((prev) => [...prev, memoryUsageValue]);
 
       setError(null);
     } catch (err) {
-      console.error('Failed to fetch health data:', err.message);
-      setError('Failed to fetch health data');
+      console.error('Failed to fetch data:', err.message);
+      setError('Failed to fetch data');
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchHealthData(); 
-
-    const interval = setInterval(() => {
-      fetchHealthData(); 
-    }, 30000); 
-
+    fetchData();
+    const interval = setInterval(fetchData, 30000); // Poll every 30 seconds
     return () => clearInterval(interval);
-  }, []); 
+  }, []);
 
-  // Các biểu đồ và dữ liệu
-  const networkDataChart = {  
+  const renderAPIStatus = () => {
+    return healthData.apis.map((api) => (
+      <div key={api.api_name} className="card">
+        <h2>API: {api.api_name}</h2>
+        <p>Status: {api.api_status}</p>
+        <p>Docker: {api.docker_status}</p>
+      </div>
+    ));
+  };
+
+  const networkDataChart = {
     labels: timestamps,
     datasets: [
       {
@@ -105,40 +109,18 @@ function App() {
       },
     ],
   };
-  
-  const cpuLineChartOptions = {
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          autoSkip: true,
-        },
-      },
-    },
-  };
 
-  const memoryLineChartData = {
+  const memoryLineChart = {
     labels: timestamps,
     datasets: [
       {
-        label: 'Memory Usage',
+        label: 'Memory Usage (%)',
         data: memoryUsages,
         fill: false,
         borderColor: 'rgba(54,162,235,1)',
         tension: 0.1,
       },
     ],
-  };
-  
-  const memoryLineChartOptions = {
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          autoSkip: true,
-        },
-      },
-    },
   };
 
   if (error) {
@@ -152,37 +134,22 @@ function App() {
         <h1>Health Endpoint Monitoring</h1>
       </div>
       
-      <div className='main'>
-        
+      <div className="main">
         <div className="menu">
           <button onClick={() => setActiveSection('health')}>Health Overview</button>
           <button onClick={() => setActiveSection('network')}>Network Data</button>
           <button onClick={() => setActiveSection('cpu')}>CPU Usage</button>
           <button onClick={() => setActiveSection('memory')}>Memory Usage</button>
         </div>
-        
+
         <div className="container">
           {activeSection === 'health' && healthData && (
             <div className="left-column">
-              <div className="card">
-                <h2>API Exchange</h2>
-                <p>Status: {healthData.exchange_api}</p>
-                <p>Docker: {healthData.exchange_docker}</p>
-              </div>
-              <div className="card">
-                <h2>API Gold</h2>
-                <p>Status: {healthData.gold_api}</p>
-                <p>Docker: {healthData.gold_docker}</p>
-              </div>
+              {renderAPIStatus()}
               <div className="card">
                 <h2>System</h2>
                 <p>CPU Usage: {healthData.system.cpu_usage}</p>
                 <p>Memory Usage: {healthData.system.memory_usage}</p>
-              </div>
-              <div className="card">
-                <h2>Network Status</h2>
-                <p>Download Speed: {networkData?.bytes_sent} Mbps</p>
-                <p>Upload Speed: {networkData?.bytes_recv} Mbps</p>
               </div>
               <div className="card">
                 <h2>Overall Status</h2>
@@ -195,27 +162,21 @@ function App() {
           {activeSection === 'network' && networkData && (
             <div className="chart">
               <h2 className="chart-title">Network Traffic:</h2>
-              <div className="chart-container">
-                <Line data={networkDataChart} options={networkLineChartOptions} />
-              </div>
+              <Line data={networkDataChart} options={networkLineChartOptions} />
             </div>
           )}
 
           {activeSection === 'cpu' && (
             <div className="chart">
               <h2 className="chart-title">CPU Usage:</h2>
-              <div className="chart-container">
-                <Line data={cpuLineChart} options={cpuLineChartOptions} />
-              </div>
+              <Line data={cpuLineChart} />
             </div>
           )}
 
           {activeSection === 'memory' && (
             <div className="chart">
               <h2 className="chart-title">Memory Usage:</h2>
-              <div className="chart-container">
-                <Line data={memoryLineChartData} options={memoryLineChartOptions} />
-              </div>
+              <Line data={memoryLineChart} />
             </div>
           )}
         </div>

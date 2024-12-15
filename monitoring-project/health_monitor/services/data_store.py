@@ -17,3 +17,8 @@ history_data = {
 }
 
 start_time = time.time()
+
+api_urls = [
+    {"name": "exchange_rate_api", "url": "http://exchange_rate_api:8000/exchange-rates"},
+    {"name": "gold_rate_api", "url": "http://gold_rate_api:8000/gold-prices"},
+]
