@@ -45,6 +45,7 @@ services:
       - MAIN_APP=App.js
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - REACT_APP_HEALTH_MONITOR_URL=http://health_monitor:8003
   
   redis:
     image: "redis:alpine"
