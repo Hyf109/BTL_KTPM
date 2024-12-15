@@ -100,7 +100,7 @@ body {
 }
 
 /* Hiệu ứng hover */
-.card:hover {
+.card:hover, .history-list li:hover {
   transform: translateY(-5px);
   box-shadow: 0 6px 10px #494f6b;
 }
@@ -147,6 +147,7 @@ body {
   width: 100%; /* Đảm bảo mỗi biểu đồ chiếm đầy đủ không gian */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   margin-left: 10px;
+  height: 100vh;
 }
 
 /* Tiêu đề biểu đồ */
@@ -165,6 +166,37 @@ body {
   align-items: center;
   background-color: #fff; /* Màu nền của phần biểu đồ */
   border-radius: 10px;
+}
+
+.history {
+  padding: 10px;
+  width: 100%;
+
+}
+
+.history-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.history-list li {
+  background: linear-gradient(135deg,#b6b8f0, #acaef0);
+  border: 1px solid #232735;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: left;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.history-list p {
+  margin: 2px 0;
+}
+
+.hight-light {
+  font-size: 24px;
+  color: #f0694f;
 }
 
 /* Responsive */

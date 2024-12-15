@@ -11,7 +11,7 @@ function App() {
   const [networkData, setNetworkData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [historyData, setHistoryData] = useState([]);
   const [downloadSpeeds, setDownloadSpeeds] = useState([]);
   const [uploadSpeeds, setUploadSpeeds] = useState([]);
   const [timestamps, setTimestamps] = useState([]);
@@ -49,6 +49,23 @@ function App() {
       setLoading(false);
     }
   };
+
+  const fetchHistoryData = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:8003/history');
+      setHistoryData(response.data);
+    } catch (error) {
+      console.error('Error fetching history data:', error);
+    }
+  };
+
+  const handleMenuClick = (section) => {
+    setActiveSection(section);
+    if (section === 'history') {
+      fetchHistoryData();
+    }
+  };
+  
 
   useEffect(() => {
     fetchData();
@@ -140,6 +157,7 @@ function App() {
           <button onClick={() => setActiveSection('network')}>Network Data</button>
           <button onClick={() => setActiveSection('cpu')}>CPU Usage</button>
           <button onClick={() => setActiveSection('memory')}>Memory Usage</button>
+          <button onClick={() => handleMenuClick('history')}>History</button>
         </div>
 
         <div className="container">
@@ -179,6 +197,28 @@ function App() {
               <Line data={memoryLineChart} />
             </div>
           )}
+
+          {activeSection === 'history' && (
+            <div className="history">
+              <h2>History Data:</h2>
+              {historyData.length ? (
+                <ul className="history-list">
+                  {historyData.map((item, index) => (
+                    <li key={index}>
+                      <p className='hight-light'><strong>Time:</strong> {item.timestamp}</p>
+                      <p><strong>Status:</strong> {item.status}</p>
+                      <p><strong>CPU Usage:</strong> {item.system.cpu_usage}</p>
+                      <p><strong>Memory Usage:</strong> {item.system.memory_usage}</p>
+                      <p><strong>Uptime:</strong> {item.uptime}</p>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No history data available</p>
+              )}
+            </div>
+          )}
+
         </div>
       </div>
     </>
